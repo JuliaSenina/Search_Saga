@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { changeSearchField } from "../actions/actionCreators";
 
 export default function Skills() {
@@ -7,28 +7,31 @@ export default function Skills() {
     (state) => state.skills
   );
   const dispatch = useDispatch();
-  const handleSearch = (evt) => {
-    const { value } = evt.target;
-    dispatch(changeSearchField(value));
-  };
+  function handleChange(event) {
+    dispatch(changeSearchField(event.target.value));
+  }
 
-  const hasQuery = search.trim() !== "";
   return (
-    <Fragment>
-      <div>
-        <input type="search" value={search} onChange={handleSearch} />
+    <div className="search">
+      <div className="search-input-box">
+        <input
+          className="search-input"
+          type="text"
+          value={search}
+          onChange={handleChange}
+          placeholder="Type something to search..."
+        />
       </div>
-      {!hasQuery && <div>Type something to search</div>}
-      {hasQuery && loading && <div>searching...</div>}
-      {error ? (
-        <div>Error occured</div>
-      ) : (
-        <ul>
-          {items.map((o) => (
-            <li key={o.id}>{o.name}</li>
+      <ul className="search-list">
+        {items &&
+          items.map((el) => (
+            <li className="search-list-item" key={el.id}>
+              {el.name}
+            </li>
           ))}
-        </ul>
-      )}
-    </Fragment>
+        {loading && <li className="loading">...loading</li>}
+        {error && <li className="error">{error.message}</li>}
+      </ul>
+    </div>
   );
 }
